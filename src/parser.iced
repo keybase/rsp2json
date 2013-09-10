@@ -1,21 +1,78 @@
 
-[NONE, HEADER, DATA, SEP] = [0...4]
+#=======================================================
 
 exports.Parser = class Parser
 
+  #-----------------
+  
   constructor : (@src) ->
 
-  parse : () ->
+  #-----------------
+  
+  parse : (cb) ->
     records = []
     until @src.eof()
-      header = @parse_header()
-      data = @parse_data()
-      records.push { header, data }
-    records
+      await @parse_header defer header
+      await @parse_clusters defer clusters
+      records.push { header, clusters }
+    cb records
 
-  eat_empty_lines : () ->
-    while @src.peek().is_empty()
-      @src.get_line()
+  #-----------------
+  
+  eat_empty_lines : (cb) ->
+    go = True
+    while go
+      await @src.peek defer line
+      if line?.is_empty()
+        @src.consume()
+      else
+        go = False
+    cb()
 
-  parse_header : () ->
-    @eat_empty_lines()
+  #-----------------
+  
+  parse_header : (cb) ->
+    await @eat_empty_lines defer()
+    header = {}
+    go = True
+    while go
+      await @src.peek defer line
+      if line?.is_header()
+        @src.consume()
+        header[line.key()] = line.value()
+      else
+        go = False
+    cb header
+
+  #-----------------
+  
+  parse_clusters : (cb) ->
+    res = []
+    go = True
+    while go
+      await @parse_cluster defer cluster
+      if cluster? then res.push cluster
+      else go = False
+    cb res
+
+  #-----------------
+
+  parse_cluster : () ->
+    await @eat_empy_lines defer()
+    cluster = {}
+    go = True
+    while go
+      await @src.peek defer line
+      if line?.is_data()
+        @src.consume()
+        cluster[line.key()] = line.value()
+        found = true
+      else
+        go = False
+    cluster = null unless found
+    cb cluster
+
+#=======================================================
+
+
+
