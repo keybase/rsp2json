@@ -1,0 +1,29 @@
+{
+  "name" : "rsp2json",
+  "version" : "0.0.0",
+  "description" : "A command-line filter to convert NIST-issued RSP files to JSON",
+  "homepage" : "https://github.com/keybase/rsp2json",
+  "repository" : { 
+    "type" : "git",
+     "url" : "https://github.com/keybase/rsp2json.git"
+  },
+  "devDependencies" : {
+  },
+  "dependencies" : {
+    "iced-coffee-script" : "*"
+  },
+  "directories" : {
+    "lib" : "lib"
+  },
+  "scripts" : {
+    "make" : "make"
+  },
+  "main" : "lib/main.js",
+  "bin" : {
+    "rsp2json" : "./bin/rsp2json"
+  },
+  "licenses": [{
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+  }]
+}
