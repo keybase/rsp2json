@@ -1,6 +1,6 @@
 {
   "name" : "rsp2json",
-  "version" : "0.0.0",
+  "version" : "0.0.1",
   "description" : "A command-line filter to convert NIST-issued RSP files to JSON",
   "homepage" : "https://github.com/keybase/rsp2json",
   "repository" : { 
