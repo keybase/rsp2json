@@ -20,13 +20,11 @@ exports.Parser = class Parser
   #-----------------
   
   eat_empty_lines : (cb) ->
-    go = True
+    go = true
     while go
       await @src.peek defer line
-      if line?.is_empty()
-        @src.consume()
-      else
-        go = False
+      if line?.is_empty() then @src.consume()
+      else go = false
     cb()
 
   #-----------------
@@ -34,41 +32,39 @@ exports.Parser = class Parser
   parse_header : (cb) ->
     await @eat_empty_lines defer()
     header = {}
-    go = True
+    go = true
     while go
       await @src.peek defer line
       if line?.is_header()
         @src.consume()
         header[line.key()] = line.value()
-      else
-        go = False
+      else go = false
     cb header
 
   #-----------------
   
   parse_clusters : (cb) ->
     res = []
-    go = True
+    go = true
     while go
       await @parse_cluster defer cluster
       if cluster? then res.push cluster
-      else go = False
+      else go = false
     cb res
 
   #-----------------
 
-  parse_cluster : () ->
-    await @eat_empy_lines defer()
+  parse_cluster : (cb) ->
+    await @eat_empty_lines defer()
     cluster = {}
-    go = True
+    go = true
     while go
       await @src.peek defer line
       if line?.is_data()
         @src.consume()
         cluster[line.key()] = line.value()
         found = true
-      else
-        go = False
+      else go = false
     cluster = null unless found
     cb cluster
 
